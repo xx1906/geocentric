@@ -4,7 +4,7 @@ import (
 	"context"
 	stdLog "log"
 
-	"github.com/djikvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/log/config"
 )
 
 func ExampleZapLoggerHelper_WithContext() {
