@@ -5,7 +5,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/djikvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/log/config"
 )
 
 func TestNewZapLogger(t *testing.T) {
