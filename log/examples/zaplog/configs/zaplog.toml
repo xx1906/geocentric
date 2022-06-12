@@ -1,0 +1,12 @@
+# 日志文件的路径
+path = "log/examples/zaplog/logs"
+# 日志级别
+level = "debug"
+# 文件名
+file_name = "example.biz.log"
+json_format = false
+max_size = 128
+max_backup = 7
+max_age = 2
+compress = false
+debug_mode_output_console = true
