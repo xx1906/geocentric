@@ -27,47 +27,47 @@ type EngineConfig struct {
 
 	// 使用驱动的名称, [mysql, postgres]
 	// @gotags: toml:"driver"
-	Driver string `protobuf:"bytes,1,opt,name=driver,proto3" json:"driver,omitempty"`
+	Driver string `protobuf:"bytes,1,opt,name=driver,proto3" json:"driver,omitempty" toml:"driver"`
 	// 数据库链接的基本信息
 	// @gotags: toml:"dsn"
-	Dsn string `protobuf:"bytes,2,opt,name=dsn,proto3" json:"dsn,omitempty"`
+	Dsn string `protobuf:"bytes,2,opt,name=dsn,proto3" json:"dsn,omitempty" toml:"dsn"`
 	//  gorm 提供的配置
 	// @gotags: toml:"skip_default_transaction"
-	SkipDefaultTransaction *bool `protobuf:"varint,3,opt,name=skip_default_transaction,json=skipDefaultTransaction,proto3,oneof" json:"skip_default_transaction,omitempty"`
+	SkipDefaultTransaction *bool `protobuf:"varint,3,opt,name=skip_default_transaction,json=skipDefaultTransaction,proto3,oneof" json:"skip_default_transaction,omitempty" toml:"skip_default_transaction"`
 	// @gotags: toml:"prepare_stmt"
-	PrepareStmt *bool `protobuf:"varint,4,opt,name=prepare_stmt,json=prepareStmt,proto3,oneof" json:"prepare_stmt,omitempty"`
+	PrepareStmt *bool `protobuf:"varint,4,opt,name=prepare_stmt,json=prepareStmt,proto3,oneof" json:"prepare_stmt,omitempty" toml:"prepare_stmt"`
 	// @gotags: toml:"disable_automatic_ping"
-	DisableAutomaticPing *bool `protobuf:"varint,5,opt,name=disable_automatic_ping,json=disableAutomaticPing,proto3,oneof" json:"disable_automatic_ping,omitempty"`
+	DisableAutomaticPing *bool `protobuf:"varint,5,opt,name=disable_automatic_ping,json=disableAutomaticPing,proto3,oneof" json:"disable_automatic_ping,omitempty" toml:"disable_automatic_ping"`
 	// @gotags: toml:"create_batch_size"
-	CreateBatchSize *int32 `protobuf:"varint,6,opt,name=create_batch_size,json=createBatchSize,proto3,oneof" json:"create_batch_size,omitempty"`
+	CreateBatchSize *int32 `protobuf:"varint,6,opt,name=create_batch_size,json=createBatchSize,proto3,oneof" json:"create_batch_size,omitempty" toml:"create_batch_size"`
 	//
 	//*************************************************************************************************
 	// 数据库连接池配置
 	// max_open_conn 最大连接数量, 默认是0，表示不限制链接数量
 	// @gotags: toml:"max_open_conn"
-	MaxOpenConn *int32 `protobuf:"varint,7,opt,name=max_open_conn,json=maxOpenConn,proto3,oneof" json:"max_open_conn,omitempty"`
+	MaxOpenConn *int32 `protobuf:"varint,7,opt,name=max_open_conn,json=maxOpenConn,proto3,oneof" json:"max_open_conn,omitempty" toml:"max_open_conn"`
 	// 如果 max_open_conn 大于 0 但小于新的 max_idle_conn，则新的 max_idle_conn 将减少以匹配 max_open_conn 限制。
 	// max_idle_conn 最大空闲链接链接数量， 小于等于 0 表示不保留任何空闲链接, 默认为 2 表示保留两个空闲链接
 	// @gotags: toml:"max_idle_conn"
-	MaxIdleConn *int32 `protobuf:"varint,8,opt,name=max_idle_conn,json=maxIdleConn,proto3,oneof" json:"max_idle_conn,omitempty"`
+	MaxIdleConn *int32 `protobuf:"varint,8,opt,name=max_idle_conn,json=maxIdleConn,proto3,oneof" json:"max_idle_conn,omitempty" toml:"max_idle_conn"`
 	// 链接的最长存活时间, 如果小于等于 0，表示链接不会关闭
 	// @gotags: toml:"max_life_time"
-	MaxLifeTime *int64 `protobuf:"varint,9,opt,name=max_life_time,json=maxLifeTime,proto3,oneof" json:"max_life_time,omitempty"`
+	MaxLifeTime *int64 `protobuf:"varint,9,opt,name=max_life_time,json=maxLifeTime,proto3,oneof" json:"max_life_time,omitempty" toml:"max_life_time"`
 	// 设置空闲链接的最长存活时间
 	// 超时的链接可能会在被复用之前延迟关闭
 	// 如果设置的值小于等于0, 那么空闲链接不会因为超时而关闭
 	// @gotags: toml:"max_idle_time"
-	MaxIdleTime *int64 `protobuf:"varint,10,opt,name=max_idle_time,json=maxIdleTime,proto3,oneof" json:"max_idle_time,omitempty"`
+	MaxIdleTime *int64 `protobuf:"varint,10,opt,name=max_idle_time,json=maxIdleTime,proto3,oneof" json:"max_idle_time,omitempty" toml:"max_idle_time"`
 	// 查询日志配置
 	// 慢查询日志的时长
 	// @gotags: toml:"slow_threshold"
-	SlowThreshold *int64 `protobuf:"varint,11,opt,name=slow_threshold,json=slowThreshold,proto3,oneof" json:"slow_threshold,omitempty"`
+	SlowThreshold *int64 `protobuf:"varint,11,opt,name=slow_threshold,json=slowThreshold,proto3,oneof" json:"slow_threshold,omitempty" toml:"slow_threshold"`
 	// @gotags: toml:"log_level"
-	LogLevel *string `protobuf:"bytes,12,opt,name=log_level,json=logLevel,proto3,oneof" json:"log_level,omitempty"`
+	LogLevel *string `protobuf:"bytes,12,opt,name=log_level,json=logLevel,proto3,oneof" json:"log_level,omitempty" toml:"log_level"`
 	// @gotags: toml:"ignore_record_not_found_error"
-	IgnoreRecordNotFoundError *bool `protobuf:"varint,13,opt,name=ignore_record_not_found_error,json=ignoreRecordNotFoundError,proto3,oneof" json:"ignore_record_not_found_error,omitempty"`
+	IgnoreRecordNotFoundError *bool `protobuf:"varint,13,opt,name=ignore_record_not_found_error,json=ignoreRecordNotFoundError,proto3,oneof" json:"ignore_record_not_found_error,omitempty" toml:"ignore_record_not_found_error"`
 	// @gotags: toml:"colorful"
-	Colorful *bool `protobuf:"varint,14,opt,name=colorful,proto3,oneof" json:"colorful,omitempty"`
+	Colorful *bool `protobuf:"varint,14,opt,name=colorful,proto3,oneof" json:"colorful,omitempty" toml:"colorful"`
 }
 
 func (x *EngineConfig) Reset() {
