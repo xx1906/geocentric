@@ -14,10 +14,6 @@ type zapFieldLogger struct {
 	ctx    context.Context
 }
 
-func (c *zapFieldLogger) Printf(format string, args ...interface{}) {
-	c.writef(InfoLevel, format, args...)
-}
-
 func (c *zapFieldLogger) Debugf(format string, args ...interface{}) {
 	if c.helper.levelEnabled(DebugLevel) {
 		c.writef(DebugLevel, format, args...)
