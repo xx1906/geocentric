@@ -39,21 +39,21 @@ const (
 
 func NewLoggerInterface(writer Writer, config logger.Config) logger.Interface {
 	var (
-		infoStr      = "%s\n[info] "
-		warnStr      = "%s\n[warn] "
-		errStr       = "%s\n[error] "
-		traceStr     = "%s\n[%.3fms] [rows:%v] %s"
-		traceWarnStr = "%s %s\n[%.3fms] [rows:%v] %s"
-		traceErrStr  = "%s %s\n[%.3fms] [rows:%v] %s"
+		infoStr      = "%s [info] "
+		warnStr      = "%s [warn] "
+		errStr       = "%s [error] "
+		traceStr     = "%s [%.3fms] [rows:%v] %s"
+		traceWarnStr = "%s %s[%.3fms] [rows:%v] %s"
+		traceErrStr  = "%s %s[%.3fms] [rows:%v] %s"
 	)
 
 	if config.Colorful {
-		infoStr = Green + "%s\n" + Reset + Green + "[info] " + Reset
-		warnStr = BlueBold + "%s\n" + Reset + Magenta + "[warn] " + Reset
-		errStr = Magenta + "%s\n" + Reset + Red + "[error] " + Reset
-		traceStr = Green + "%s\n" + Reset + Yellow + "[%.3fms] " + BlueBold + "[rows:%v]" + Reset + " %s"
-		traceWarnStr = Green + "%s " + Yellow + "%s\n" + Reset + RedBold + "[%.3fms] " + Yellow + "[rows:%v]" + Magenta + " %s" + Reset
-		traceErrStr = RedBold + "%s " + MagentaBold + "%s\n" + Reset + Yellow + "[%.3fms] " + BlueBold + "[rows:%v]" + Reset + " %s"
+		infoStr = Green + "%s " + Reset + Green + "[info] " + Reset
+		warnStr = BlueBold + "%s " + Reset + Magenta + "[warn] " + Reset
+		errStr = Magenta + "%s " + Reset + Red + "[error] " + Reset
+		traceStr = Green + "%s " + Reset + Yellow + "[%.3fms] " + BlueBold + "[rows:%v]" + Reset + " %s"
+		traceWarnStr = Green + "%s " + Yellow + "%s " + Reset + RedBold + "[%.3fms] " + Yellow + "[rows:%v]" + Magenta + " %s" + Reset
+		traceErrStr = RedBold + "%s " + MagentaBold + "%s " + Reset + Yellow + "[%.3fms] " + BlueBold + "[rows:%v]" + Reset + " %s"
 	}
 
 	return &g2LoggerInterfaceImpl{
@@ -76,7 +76,7 @@ type g2LoggerInterfaceImpl struct {
 }
 
 type Writer interface {
-	Printf(ctx context.Context, format string, values ...interface{})
+	Printf(ctx context.Context, level logger.LogLevel, format string, values ...interface{})
 }
 
 func (c *g2LoggerInterfaceImpl) LogMode(level logger.LogLevel) logger.Interface {
@@ -87,19 +87,19 @@ func (c *g2LoggerInterfaceImpl) LogMode(level logger.LogLevel) logger.Interface 
 
 func (c *g2LoggerInterfaceImpl) Info(ctx context.Context, format string, data ...interface{}) {
 	if c.LogLevel >= Info {
-		c.Printf(ctx, c.infoStr+format, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+		c.Printf(ctx, Info, c.infoStr+format, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (c *g2LoggerInterfaceImpl) Warn(ctx context.Context, format string, data ...interface{}) {
 	if c.LogLevel >= Warn {
-		c.Printf(ctx, c.warnStr+format, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+		c.Printf(ctx, Warn, c.warnStr+format, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (c *g2LoggerInterfaceImpl) Error(ctx context.Context, format string, data ...interface{}) {
 	if c.LogLevel >= Error {
-		c.Printf(ctx, c.errStr+format, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+		c.Printf(ctx, Error, c.errStr+format, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
@@ -112,24 +112,24 @@ func (c *g2LoggerInterfaceImpl) Trace(ctx context.Context, begin time.Time, fc f
 	case err != nil && c.LogLevel >= Error && (!errors.Is(err, logger.ErrRecordNotFound) || !c.IgnoreRecordNotFoundError):
 		sql, rows := fc()
 		if rows == -1 {
-			c.Printf(ctx, c.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			c.Printf(ctx, Info, c.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
 		} else {
-			c.Printf(ctx, c.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			c.Printf(ctx, Info, c.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	case elapsed > c.SlowThreshold && c.SlowThreshold != 0 && c.LogLevel >= logger.Warn:
 		sql, rows := fc()
 		slowLog := fmt.Sprintf("SLOW SQL >= %v", c.SlowThreshold)
 		if rows == -1 {
-			c.Printf(ctx, c.traceWarnStr, utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			c.Printf(ctx, Info, c.traceWarnStr, utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
 		} else {
-			c.Printf(ctx, c.traceWarnStr, utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			c.Printf(ctx, Info, c.traceWarnStr, utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	case c.LogLevel == Info:
 		sql, rows := fc()
 		if rows == -1 {
-			c.Printf(ctx, c.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			c.Printf(ctx, Info, c.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, "-", sql)
 		} else {
-			c.Printf(ctx, c.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			c.Printf(ctx, Info, c.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	}
 }
