@@ -13,8 +13,8 @@ import (
 
 	"github.com/dijkvy/geocentric/g2gorm"
 	"github.com/dijkvy/geocentric/g2gorm/config"
-	"github.com/dijkvy/geocentric/log"
 	lc "github.com/dijkvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/log/zaplog"
 )
 
 var (
@@ -66,7 +66,7 @@ func main() {
 	fmt.Println(conf.LoggerConfig.String())
 	var helper g2gorm.DBHelper
 	var zl *zap.Logger
-	if zl, err = log.NewZapLogger(&conf.LoggerConfig); err != nil {
+	if zl, err = zaplog.NewZapLogger(&conf.LoggerConfig); err != nil {
 		panic(err)
 	}
 	defer zl.Sync()

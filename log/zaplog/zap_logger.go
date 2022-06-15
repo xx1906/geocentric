@@ -1,4 +1,4 @@
-package log
+package zaplog
 
 import (
 	"errors"
@@ -26,7 +26,11 @@ const (
 )
 
 // NewZapLogger 日志配置文件
-func NewZapLogger(cfg *config.ZapConfig, opt ...zap.Option) (logger *zap.Logger, err error) {
+// 如果需要配置 options, 请使用 logger.WithOptions() 方法进行配置
+// zap.AddCaller()
+// zap.AddCallerSkip(2)
+// 添加额外的配置
+func NewZapLogger(cfg *config.ZapConfig) (logger *zap.Logger, err error) {
 	var (
 		defaultBackUp   = 200       // 保留日志的最大值
 		defaultSize     = 1024      // 默认日志最大分割容量
@@ -122,10 +126,7 @@ func NewZapLogger(cfg *config.ZapConfig, opt ...zap.Option) (logger *zap.Logger,
 		core = zapcore.NewTee(core, zapcore.NewCore(zapcore.NewConsoleEncoder(encoderConfig), zapcore.AddSync(os.Stdout), logLevel))
 	}
 
-	// zap.AddCaller()
-	// zap.AddCallerSkip(2)
-	// 添加额外的配置
-	return zap.New(core, opt...), nil
+	return zap.New(core), nil
 }
 
 func getWriter(filename string, maxBackup, maxAge, maxSize int, compress bool) io.Writer {

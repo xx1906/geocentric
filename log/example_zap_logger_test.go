@@ -5,10 +5,11 @@ import (
 	stdLog "log"
 
 	"github.com/dijkvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/log/zaplog"
 )
 
 func ExampleZapLoggerHelper_WithContext() {
-	var logger, err = NewZapLogger(&config.ZapConfig{})
+	var logger, err = zaplog.NewZapLogger(&config.ZapConfig{})
 	if err != nil {
 		stdLog.Fatal("err ", err)
 	}

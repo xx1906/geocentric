@@ -14,6 +14,7 @@ import (
 
 	"github.com/dijkvy/geocentric/log"
 	"github.com/dijkvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/log/zaplog"
 )
 
 var (
@@ -38,10 +39,11 @@ func main() {
 		fmt.Println(os.RemoveAll(abs))
 	}()
 
-	logger, err := log.NewZapLogger(&conf, zap.WithCaller(true), zap.AddCallerSkip(2))
+	logger, err := zaplog.NewZapLogger(&conf)
 	if err != nil {
 		panic(err)
 	}
+	logger = logger.WithOptions(zap.WithCaller(true), zap.AddCallerSkip(2))
 	defer logger.Sync()
 	opts := make([]log.Option, 0)
 	opts = append(opts, log.AddHook(&injectAppName{AppName: "demo"}))
