@@ -9,4 +9,4 @@ max_size = 128
 max_backup = 7
 max_age = 2
 compress = false
-debug_mode_output_console = true
+debug_mode_output_console = false
