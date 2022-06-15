@@ -4,6 +4,8 @@ import (
 	"context"
 	stdLog "log"
 
+	"go.uber.org/zap"
+
 	"github.com/dijkvy/geocentric/log/config"
 	"github.com/dijkvy/geocentric/log/zaplog"
 )
@@ -15,5 +17,5 @@ func ExampleZapLoggerHelper_WithContext() {
 	}
 	var helper Helper = NewZapHelper(logger)
 	helper.WithContext(context.Background()).Info("hello")
-	helper.WithContext(context.TODO()).Error("error ", "error info")
+	helper.WithContext(context.TODO()).Error("error ", zap.String("error", "error info"))
 }

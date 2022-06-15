@@ -1,15 +1,11 @@
 package log
 
-type FieldLogger interface {
-	Debugf(format string, args ...interface{})
-	Infof(format string, args ...interface{})
-	Warnf(format string, args ...interface{})
-	Errorf(format string, args ...interface{})
-	Fatalf(format string, args ...interface{})
+import "go.uber.org/zap"
 
-	Debug(args ...interface{})
-	Info(args ...interface{})
-	Warn(args ...interface{})
-	Error(args ...interface{})
-	Fatal(args ...interface{})
+type FieldLogger interface {
+	Debug(msg string, fields ...zap.Field)
+	Info(msg string, fields ...zap.Field)
+	Warn(msg string, fields ...zap.Field)
+	Error(msg string, fields ...zap.Field)
+	Fatal(msg string, fields ...zap.Field)
 }

@@ -1,9 +1,7 @@
 package log
 
 import (
-	"bytes"
 	"context"
-	"sync"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -29,12 +27,7 @@ func NewZapHelper(logger *zap.Logger, opt ...Option) Helper {
 
 	c := zapLoggerHelper{
 		logger: logger,
-		pool: &sync.Pool{
-			New: func() interface{} {
-				return new(bytes.Buffer)
-			},
-		},
-		Hooks: cfg.hooks,
+		Hooks:  cfg.hooks,
 	}
 	c.initLogLevel()
 	return &c
@@ -44,7 +37,6 @@ type zapLoggerHelper struct {
 	logger *zap.Logger
 	Hooks  LevelHooks
 	level  zapcore.Level
-	pool   *sync.Pool
 }
 
 func (c *zapLoggerHelper) WithContext(ctx context.Context) FieldLogger {
@@ -52,16 +44,6 @@ func (c *zapLoggerHelper) WithContext(ctx context.Context) FieldLogger {
 		ctx:    ctx,
 		helper: c,
 		entry:  newZapLogEntry(ctx),
-	}
-}
-
-// pollBuff 返回一个可用的 buff 和一个释放 bytes.Buffer 的函数
-func (c *zapLoggerHelper) pollBuff() (buff *bytes.Buffer, release func()) {
-	buff, _ = (c.pool.Get()).(*bytes.Buffer)
-	buff.Reset()
-	return buff, func() {
-		buff.Reset()
-		c.pool.Put(buff)
 	}
 }
 

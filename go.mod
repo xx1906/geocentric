@@ -3,8 +3,9 @@ module github.com/dijkvy/geocentric
 go 1.16
 
 require (
-	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/BurntSushi/toml v0.3.1
 	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/google/uuid v1.3.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.7.1 // indirect

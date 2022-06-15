@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -14,63 +15,33 @@ type zapFieldLogger struct {
 	ctx    context.Context
 }
 
-func (c *zapFieldLogger) Debugf(format string, args ...interface{}) {
+func (c *zapFieldLogger) Debug(msg string, fields ...zap.Field) {
 	if c.helper.levelEnabled(DebugLevel) {
-		c.writef(DebugLevel, format, args...)
+		c.write(DebugLevel, msg, fields...)
 	}
 }
 
-func (c *zapFieldLogger) Infof(format string, args ...interface{}) {
+func (c *zapFieldLogger) Info(msg string, fields ...zap.Field) {
 	if c.helper.levelEnabled(InfoLevel) {
-		c.writef(InfoLevel, format, args...)
+		c.write(InfoLevel, msg, fields...)
 	}
 }
 
-func (c *zapFieldLogger) Warnf(format string, args ...interface{}) {
+func (c *zapFieldLogger) Warn(msg string, fields ...zap.Field) {
 	if c.helper.levelEnabled(WarnLevel) {
-		c.writef(WarnLevel, format, args...)
+		c.write(WarnLevel, msg, fields...)
 	}
 }
 
-func (c *zapFieldLogger) Errorf(format string, args ...interface{}) {
+func (c *zapFieldLogger) Error(msg string, fields ...zap.Field) {
 	if c.helper.levelEnabled(ErrorLevel) {
-		c.writef(ErrorLevel, format, args...)
+		c.write(ErrorLevel, msg, fields...)
 	}
 }
 
-func (c *zapFieldLogger) Fatalf(format string, args ...interface{}) {
+func (c *zapFieldLogger) Fatal(msg string, fields ...zap.Field) {
 	if c.helper.levelEnabled(FatalLevel) {
-		c.writef(FatalLevel, format, args...)
-	}
-}
-
-func (c *zapFieldLogger) Debug(args ...interface{}) {
-	if c.helper.levelEnabled(DebugLevel) {
-		c.write(DebugLevel, args...)
-	}
-}
-
-func (c *zapFieldLogger) Info(args ...interface{}) {
-	if c.helper.levelEnabled(InfoLevel) {
-		c.write(InfoLevel, args...)
-	}
-}
-
-func (c *zapFieldLogger) Warn(args ...interface{}) {
-	if c.helper.levelEnabled(WarnLevel) {
-		c.write(WarnLevel, args...)
-	}
-}
-
-func (c *zapFieldLogger) Error(args ...interface{}) {
-	if c.helper.levelEnabled(ErrorLevel) {
-		c.write(ErrorLevel, args...)
-	}
-}
-
-func (c *zapFieldLogger) Fatal(args ...interface{}) {
-	if c.helper.levelEnabled(FatalLevel) {
-		c.write(FatalLevel, args...)
+		c.write(FatalLevel, msg, fields...)
 	}
 }
 
@@ -86,34 +57,9 @@ func (c *zapFieldLogger) fireHooks() {
 	}
 }
 
-func (c *zapFieldLogger) pollDataf(format string, args ...interface{}) (data string) {
-	buff, release := c.helper.pollBuff()
-	defer release()
-	buff.WriteString(fmt.Sprintf(format, args...))
-	return buff.String()
-}
-
-func (c *zapFieldLogger) pollData(args ...interface{}) (data string) {
-	buff, release := c.helper.pollBuff()
-	defer release()
-	for _, v := range args {
-		buff.WriteString(fmt.Sprintf("%v ", v))
-	}
-	return buff.String()
-}
-
-func (c *zapFieldLogger) write(level zapcore.Level, args ...interface{}) {
-	msg := c.pollData(args...)
+func (c *zapFieldLogger) write(level zapcore.Level, msg string, fields ...zap.Field) {
 	c.fireHooks()
 	if ce := c.helper.logger.Check(level, msg); ce != nil {
-		ce.Write(c.entry.GetFields()...)
-	}
-}
-
-func (c *zapFieldLogger) writef(level zapcore.Level, format string, args ...interface{}) {
-	msg := c.pollDataf(format, args...)
-	c.fireHooks()
-	if ce := c.helper.logger.Check(level, msg); ce != nil {
-		ce.Write(c.entry.GetFields()...)
+		ce.Write(append(fields, c.entry.GetFields()...)...)
 	}
 }
