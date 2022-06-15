@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"github.com/dijkvy/geocentric/log/config"
 )
@@ -32,4 +33,33 @@ func Test_getWriter(t *testing.T) {
 	}
 	defer os.Remove(fileName)
 	writer.Write([]byte("hello world"))
+}
+
+func Test_parseLogLevel(t *testing.T) {
+	type testTab struct {
+		inputStr string
+		expected zapcore.Level
+	}
+	// 测试表格
+	var tables = []testTab{
+		testTab{inputStr: LevelDebug, expected: zapcore.DebugLevel},
+		testTab{inputStr: LevelInfo, expected: zapcore.InfoLevel},
+		testTab{inputStr: LevelWarn, expected: zapcore.WarnLevel},
+		testTab{inputStr: LevelError, expected: zapcore.ErrorLevel},
+		testTab{inputStr: LevelFatal, expected: zapcore.FatalLevel},
+		testTab{inputStr: "_info", expected: zapcore.InfoLevel},
+		testTab{inputStr: "''", expected: zapcore.InfoLevel},
+	}
+
+	for _, v := range tables {
+		output, err := parseLogLevel(v.inputStr)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if output != v.expected {
+			t.Errorf("expected %v but get %v", v.expected, output)
+		}
+		t.Log(output, v.expected, v.inputStr)
+	}
 }
