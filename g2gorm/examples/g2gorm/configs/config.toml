@@ -1,6 +1,5 @@
 [logger_config]
-path = "g2gorm/examples/g2gorm/logs"
-file_name = "example.biz.log"
+file_name = "g2gorm/examples/g2gorm/logs/example.biz.log"
 level = "debug"
 json_format = false
 max_size = 128
