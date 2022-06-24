@@ -4,8 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -46,14 +44,6 @@ func main() {
 	if _, err = toml.DecodeFile(*cfgPath, &conf); err != nil {
 		panic(err)
 	}
-	defer func() {
-		abs, err := filepath.Abs(conf.GetPath())
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(os.RemoveAll(abs))
-	}()
 
 	logger, err := zaplog.NewZapLogger(&conf)
 	if err != nil {

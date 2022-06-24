@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -44,14 +43,6 @@ func NewZapLogger(cfg *config.ZapConfig) (logger *zap.Logger, err error) {
 
 	if cfg == nil {
 		return handleErr("NewZapLogger couldn't be nil")
-	}
-
-	if cfg.Path == "" {
-		return handleErr("log path must config")
-	}
-
-	if err = os.MkdirAll(cfg.GetPath(), os.ModePerm); err != nil {
-		return handleErr(err.Error())
 	}
 
 	// info is default log level
@@ -101,11 +92,11 @@ func NewZapLogger(cfg *config.ZapConfig) (logger *zap.Logger, err error) {
 		maxSize = int(cfg.GetMaxSize())
 	}
 
-	if cfg.FileName == nil {
-		cfg.FileName = &defaultFileName
+	if cfg.FileName == "" {
+		cfg.FileName = defaultFileName
 	}
 	// writer
-	bizWriter := getWriter(cfg.Path+string(filepath.Separator)+cfg.GetFileName(),
+	bizWriter := getWriter(cfg.GetFileName(),
 		maxBackupSize, maxAge, maxSize, cfg.GetCompress())
 
 	// 判断输入日志的格式

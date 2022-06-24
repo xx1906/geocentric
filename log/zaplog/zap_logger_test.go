@@ -12,7 +12,7 @@ import (
 
 func TestNewZapLogger(t *testing.T) {
 
-	logger, err := NewZapLogger(&config.ZapConfig{Path: "."})
+	logger, err := NewZapLogger(&config.ZapConfig{FileName: "biz.log"})
 	if err != nil {
 		t.Error(err)
 		return
