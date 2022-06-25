@@ -31,7 +31,7 @@ func InjectTraceHandler(ctx *gin.Context) {
 
 	value := strings.ToLower(base64.StdEncoding.EncodeToString([]byte(uuid.NewString())))
 	c = tag.Inject(c, value)
-	ctx.Request = ctx.Request.Clone(c)
+	ctx.Request = ctx.Request.WithContext(c)
 	ctx.Request.Header.Set(xTrace, value)
 	ctx.Request.Response.Header.Set(xTrace, value)
 	ctx.Next()
@@ -73,7 +73,7 @@ func InjectTimeOutHandler(timeoutMillSec time.Duration) gin.HandlerFunc {
 				cancel()
 			}
 		}()
-		ctx.Request = ctx.Request.Clone(c)
+		ctx.Request = ctx.Request.WithContext(c)
 		ctx.Request.Header.Set(xTimeout, timeoutValue)
 		ctx.Request.Response.Header.Set(xTimeout, timeoutValue)
 		ctx.Next()
