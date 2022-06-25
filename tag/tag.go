@@ -4,6 +4,8 @@ import "context"
 
 type traceKey int
 
+const Tr = "tr"
+
 var (
 	key traceKey = 1
 )
