@@ -18,7 +18,7 @@ import (
 
 const (
 	xTrace   = "X-Trace"
-	xTimeout = "X-gap"
+	xTimeout = "X-Age"
 )
 
 // InjectTraceHandler 注入 value handler func
@@ -33,15 +33,16 @@ func InjectTraceHandler(ctx *gin.Context) {
 	c = tag.Inject(c, value)
 	ctx.Request = ctx.Request.WithContext(c)
 	ctx.Request.Header.Set(xTrace, value)
-	ctx.Request.Response.Header.Set(xTrace, value)
+	ctx.Header(xTrace, value)
 	ctx.Next()
 }
 
 // InjectTimeOutHandler 向请求上下文中注入过期时间
 func InjectTimeOutHandler(timeoutMillSec time.Duration) gin.HandlerFunc {
+	// fixed 修复共享变量 (timeoutMillSec) 的 bug
+	timeoutMillSec = timeoutMillSec * time.Millisecond
 	return func(ctx *gin.Context) {
-
-		timeoutMillSec = timeoutMillSec * time.Millisecond
+		var timeoutMill = timeoutMillSec
 		c := ctx.Request.Context()
 		deadline, ok := c.Deadline()
 		if ok && deadline.Before(deadline) {
@@ -60,13 +61,13 @@ func InjectTimeOutHandler(timeoutMillSec time.Duration) gin.HandlerFunc {
 			if parseInt, err := strconv.ParseInt(v, 10, 64); err != nil {
 				_, _ = fmt.Fprintf(os.Stderr, "InjectTimeOutHandler parse timeoutMillSec format error %s", err)
 			} else {
-				timeoutMillSec = time.Duration(parseInt)
+				timeoutMill = time.Duration(parseInt)
 			}
 		}
 		// 注入过期时间
-		timeoutValue := fmt.Sprintf("%d", timeoutMillSec)
+		timeoutValue := fmt.Sprintf("%d", timeoutMill)
 		var cancel func()
-		c, cancel = context.WithTimeout(c, timeoutMillSec)
+		c, cancel = context.WithTimeout(c, timeoutMill)
 		go func() {
 			select {
 			case <-c.Done():
@@ -75,7 +76,7 @@ func InjectTimeOutHandler(timeoutMillSec time.Duration) gin.HandlerFunc {
 		}()
 		ctx.Request = ctx.Request.WithContext(c)
 		ctx.Request.Header.Set(xTimeout, timeoutValue)
-		ctx.Request.Response.Header.Set(xTimeout, timeoutValue)
+		ctx.Header(xTimeout, timeoutValue)
 		ctx.Next()
 	}
 }
