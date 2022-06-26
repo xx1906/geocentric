@@ -15,7 +15,7 @@ func ExampleZapLoggerHelper_WithContext() {
 	if err != nil {
 		stdLog.Fatal("err ", err)
 	}
-	var helper Helper = NewZapHelper(logger)
+	var helper Helper = NewHelper(logger)
 	helper.WithContext(context.Background()).Info("hello")
 	helper.WithContext(context.TODO()).Error("error ", zap.String("error", "error info"))
 }

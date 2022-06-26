@@ -19,7 +19,7 @@ type ZapHelperBuilder struct {
 	hooks LevelHooks
 }
 
-func NewZapHelper(logger *zap.Logger, opt ...Option) Helper {
+func NewHelper(logger *zap.Logger, opt ...Option) Helper {
 	var cfg = &ZapHelperBuilder{hooks: make(LevelHooks, 6)}
 	for _, v := range opt {
 		v(cfg)
