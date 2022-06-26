@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"gorm.io/gorm/logger"
@@ -36,6 +37,24 @@ const (
 	// Error error log level
 	Error = logger.Error
 )
+
+// ParserLevel 从字符串中解析 gorm 的日志等级
+// 默认值为 info
+func ParserLevel(lev string) (level logger.LogLevel) {
+	lev = strings.ToLower(lev)
+	var mapper = make(map[string]logger.LogLevel, 4)
+	mapper["silent"] = Silent
+	mapper["info"] = Info
+	mapper["warn"] = Warn
+	mapper["error"] = Error
+
+	if v, ok := mapper[lev]; ok {
+		level = v
+	} else {
+		level = Info
+	}
+	return level
+}
 
 func NewLoggerInterface(writer Writer, config logger.Config) logger.Interface {
 	var (
