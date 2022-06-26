@@ -53,7 +53,7 @@ func main() {
 	defer logger.Sync()
 	opts := make([]log.Option, 0)
 	opts = append(opts, log.AddHook(&injectAppName{AppName: "demo"}), log.AddHook(key(0)))
-	helper := log.NewZapHelper(logger, opts...)
+	helper := log.NewHelper(logger, opts...)
 	ctx := context.TODO()
 	for i := 0; i < 1000; i++ {
 
@@ -79,6 +79,6 @@ func (c *injectAppName) Levels() (lvs []zapcore.Level) {
 
 func (c *injectAppName) Fire(e log.Entry) (err error) {
 	_ = e.Context()
-	e.AppendField(zap.String("app_name", c.AppName))
+	_ = e.AppendField(zap.String("app_name", c.AppName))
 	return nil
 }
