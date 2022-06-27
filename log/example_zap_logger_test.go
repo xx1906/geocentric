@@ -10,7 +10,7 @@ import (
 	"github.com/dijkvy/geocentric/log/zaplog"
 )
 
-func ExampleZapLoggerHelper_WithContext() {
+func ExampleNewHelper() {
 	var logger, err = zaplog.NewZapLogger(&config.ZapConfig{})
 	if err != nil {
 		stdLog.Fatal("err ", err)

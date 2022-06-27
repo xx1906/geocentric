@@ -38,11 +38,9 @@ func InjectTraceHandler(ctx *gin.Context) {
 }
 
 // InjectTimeOutHandler 向请求上下文中注入过期时间
-func InjectTimeOutHandler(timeoutMillSec time.Duration) gin.HandlerFunc {
-	// fixed 修复共享变量 (timeoutMillSec) 的 bug
-	timeoutMillSec = timeoutMillSec * time.Millisecond
+func InjectTimeOutHandler(timeout time.Duration) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var timeoutMill = timeoutMillSec
+		var _timeout = timeout
 		c := ctx.Request.Context()
 		deadline, ok := c.Deadline()
 		if ok && deadline.Before(deadline) {
@@ -59,15 +57,15 @@ func InjectTimeOutHandler(timeoutMillSec time.Duration) gin.HandlerFunc {
 		// 从 header 中提取过期时间, 如果没有或者格式不正确不做处理
 		if v := ctx.Request.Header.Get(xTimeout); v != "" {
 			if parseInt, err := strconv.ParseInt(v, 10, 64); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "InjectTimeOutHandler parse timeoutMillSec format error %s", err)
+				_, _ = fmt.Fprintf(os.Stderr, "InjectTimeOutHandler parse _timeout format error %s", err)
 			} else {
-				timeoutMill = time.Duration(parseInt)
+				_timeout = time.Duration(parseInt)
 			}
 		}
 		// 注入过期时间
-		timeoutValue := fmt.Sprintf("%d", timeoutMill)
+		timeoutValue := fmt.Sprintf("%d", _timeout)
 		var cancel func()
-		c, cancel = context.WithTimeout(c, timeoutMill)
+		c, cancel = context.WithTimeout(c, _timeout)
 		go func() {
 			select {
 			case <-c.Done():
