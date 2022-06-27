@@ -2,42 +2,91 @@ package handlerfunc
 
 import (
 	"context"
+	"fmt"
+	"net"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func TestInjectHandler(t *testing.T) {
-	request, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "/index", nil)
+	engine := gin.Default()
+	// 随机端口
+	listener, err := net.Listen("tcp", "0.0.0.0:0")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	request.Response = &http.Response{Header: map[string][]string{}}
+	// 使用 插件
+	engine.Use(InjectTraceHandler)
+	engine.GET("/inject", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{"status": "ok"})
+	})
 
-	handlerCtx := &gin.Context{Request: request}
-	InjectTraceHandler(handlerCtx)
-	t.Log(handlerCtx.Request.Header)
-	t.Log(handlerCtx.Request.Response.Header)
+	// 异步开启服务
+	go func() {
+		if err := engine.RunListener(listener); err != nil {
+			t.Error(err)
+		}
+	}()
+
+	fmt.Println(listener.Addr().String())
+	t.Log(listener.Addr().String())
+	request, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "http://"+listener.Addr().String()+"/inject", nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	time.Sleep(time.Second)
+	resp, err := http.DefaultClient.Do(request)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(resp.Header)
+	defer resp.Body.Close()
+
+	// 关闭监听
+	listener.Close()
 }
 
 func TestInjectTimeOutHandler(t *testing.T) {
-	request, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "/index", nil)
+	engine := gin.Default()
+	// 随机端口
+	listener, err := net.Listen("tcp", "0.0.0.0:0")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	request.Response = &http.Response{Header: map[string][]string{}}
+	// 使用 插件
+	engine.Use(InjectTraceHandler)
+	engine.Use(InjectTimeOutHandler(time.Second * 5))
+	engine.GET("/inject", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{"status": "ok"})
+	})
 
-	handlerCtx := &gin.Context{Request: request}
-	InjectTraceHandler(handlerCtx)
-	InjectTimeOutHandler(100)(handlerCtx)
-	t.Log(handlerCtx.Request.Header)
+	// 异步开启服务
+	go func() {
+		if err := engine.RunListener(listener); err != nil {
+			t.Error(err)
+		}
+	}()
+	fmt.Println(listener.Addr().String())
+	t.Log(listener.Addr().String())
+	request, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "http://"+listener.Addr().String()+"/inject", nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	time.Sleep(time.Second)
+	resp, err := http.DefaultClient.Do(request)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(resp.Header)
+	defer resp.Body.Close()
 
-	handlerCtx.Request = handlerCtx.Request.Clone(context.TODO())
-	handlerCtx.Request.Header.Set(xTimeout, "9000xx")
-	InjectTimeOutHandler(30)(handlerCtx)
-	t.Log(handlerCtx.Request.Header)
-	t.Log(handlerCtx.Request.Response.Header)
+	// 关闭监听
+	listener.Close()
 }
