@@ -27,20 +27,6 @@ func TestNewDBHelper(t *testing.T) {
 		return
 	}
 	var opts = make([]ConfigOption, 0)
-	if cnf.DisableAutomaticPing != nil {
-		opts = append(opts, WithDisableAutomaticPing(cnf.GetDisableAutomaticPing()))
-	}
-	if cnf.SkipDefaultTransaction != nil {
-		opts = append(opts, WithSkipDefaultTransaction(cnf.GetSkipDefaultTransaction()))
-	}
-
-	if cnf.CreateBatchSize != nil {
-		opts = append(opts, WithCreateBatchSize(int(cnf.GetCreateBatchSize())))
-	}
-
-	if cnf.PrepareStmt != nil {
-		opts = append(opts, WithPrepareStmt(cnf.GetPrepareStmt()))
-	}
 
 	opts = append(opts, WithSingularTable())
 	var helper, err = NewDBHelper(cnf, opts...)

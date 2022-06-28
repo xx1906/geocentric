@@ -72,16 +72,7 @@ func main() {
 	defer zl.Sync()
 
 	if helper, err = g2gorm.NewDBHelper(&conf.DBConfig,
-		g2gorm.WithLogger(
-			g2gorm.NewLoggerInterface(
-				g2gorm.NewWriter(zl, &g2Hook{} /*注册回调钩子函数*/),
-				logger.Config{
-					SlowThreshold: time.Duration(conf.DBConfig.GetSlowThreshold()) * time.Millisecond,
-					LogLevel:      g2gorm.Warn,
-				},
-			),
-		),
-	); err != nil {
+		g2gorm.WithLoggerV2(zl, conf.DBConfig.GetLogConfig(), &g2Hook{})); err != nil {
 		panic(err)
 	}
 
