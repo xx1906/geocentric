@@ -12,13 +12,15 @@ debug_mode_output_console = true
 driver = "mysql"
 dsn = "root:123456@tcp(127.0.0.1:5601)/crok?charset=utf8mb4&parseTime=True&loc=Local"
 
+# 连接池配置
+[db_config.conn_pool]
 max_open_conn = 2
 max_idle_conn = 2
+max_life_time = "1h"
+max_idle_time = "30m"
 
-#
-max_life_time = 86400
-max_idle_time = 86400
-
-slow_threshold = 500
+# 日志配置
+[db_config.log_config]
+slow_threshold = "500ms"
 log_level = "debug"
 colorful = true
