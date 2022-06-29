@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package g2gorm;
+package config;
 
-option go_package = "g2gorm/config;config";
+option go_package = "./config;config";
 
 message EngineConfig  {
 
@@ -26,14 +26,14 @@ message EngineConfig  {
   // 连接池配置
   // @gotags: toml:"conn_pool"
   ConnPool conn_pool = 7;
-  //
+
   // 日志记录配置
-  // @gotags: toml:"log_config"
-  LogConfig log_config = 8;
+  // @gotags: toml:"orm_log_config"
+  OrmLogConfig orm_log_config = 8;
 }
 
 // gorm 日志配置
-message LogConfig {
+message OrmLogConfig {
   // 查询日志配置
   // 慢查询日志的时长
   // 默认 1 秒

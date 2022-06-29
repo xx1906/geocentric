@@ -11,9 +11,8 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm/logger"
 
+	lc "github.com/dijkvy/geocentric/config"
 	"github.com/dijkvy/geocentric/g2gorm"
-	"github.com/dijkvy/geocentric/g2gorm/config"
-	lc "github.com/dijkvy/geocentric/log/config"
 	"github.com/dijkvy/geocentric/log/zaplog"
 )
 
@@ -22,8 +21,8 @@ var (
 )
 
 type Config struct {
-	LoggerConfig lc.ZapConfig        `toml:"logger_config"`
-	DBConfig     config.EngineConfig `toml:"db_config"`
+	LoggerConfig lc.ZapConfig    `toml:"logger_config"`
+	DBConfig     lc.EngineConfig `toml:"db_config"`
 }
 
 type UserInfo struct {
@@ -72,7 +71,7 @@ func main() {
 	defer zl.Sync()
 
 	if helper, err = g2gorm.NewDBHelper(&conf.DBConfig,
-		g2gorm.WithLoggerV2(zl, conf.DBConfig.GetLogConfig(), &g2Hook{})); err != nil {
+		g2gorm.WithLoggerV2(zl, conf.DBConfig.GetOrmLogConfig(), &g2Hook{})); err != nil {
 		panic(err)
 	}
 

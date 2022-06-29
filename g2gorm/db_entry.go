@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
-	"github.com/dijkvy/geocentric/g2gorm/config"
+	"github.com/dijkvy/geocentric/config"
 )
 
 type ConfigOption func(c *gorm.Config)
@@ -29,11 +29,11 @@ func WithLogger(l logger.Interface) ConfigOption {
 	}
 }
 
-func WithLoggerV2(logger *zap.Logger, conf *config.LogConfig, optHooks ...Hook) ConfigOption {
+func WithLoggerV2(logger *zap.Logger, conf *config.OrmLogConfig, optHooks ...Hook) ConfigOption {
 	return WithLogger(NewLogger(logger, conf, optHooks...))
 }
 
-func NewLogger(logger *zap.Logger, conf *config.LogConfig, optHooks ...Hook) logger.Interface {
+func NewLogger(logger *zap.Logger, conf *config.OrmLogConfig, optHooks ...Hook) logger.Interface {
 	writer := NewWriter(logger, optHooks...)
 	loggerConfig := buildLoggerConfig(conf)
 	loggerInterface := NewLoggerInterface(writer, loggerConfig)
@@ -113,7 +113,7 @@ func initDBConnPool(db *sql.DB, conf *config.ConnPool) {
 	}
 }
 
-func buildLoggerConfig(conf *config.LogConfig) logger.Config {
+func buildLoggerConfig(conf *config.OrmLogConfig) logger.Config {
 	c := logger.Config{}
 	var err error
 	if c.SlowThreshold, err = time.ParseDuration(conf.GetSlowThreshold()); err != nil {

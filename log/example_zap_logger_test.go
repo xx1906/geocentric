@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/dijkvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/config"
 	"github.com/dijkvy/geocentric/log/zaplog"
 )
 

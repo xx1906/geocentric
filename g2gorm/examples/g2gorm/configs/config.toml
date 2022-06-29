@@ -20,7 +20,7 @@ max_life_time = "1h"
 max_idle_time = "30m"
 
 # 日志配置
-[db_config.log_config]
+[db_config.orm_log_config]
 slow_threshold = "500ms"
 log_level = "debug"
 colorful = true
