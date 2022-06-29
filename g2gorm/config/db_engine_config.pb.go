@@ -145,8 +145,10 @@ type LogConfig struct {
 
 	// 查询日志配置
 	// 慢查询日志的时长
+	// 默认 1 秒
 	// @gotags: toml:"slow_threshold"
 	SlowThreshold string `protobuf:"bytes,1,opt,name=slow_threshold,json=slowThreshold,proto3" json:"slow_threshold,omitempty" toml:"slow_threshold"`
+	// 默认值为 info
 	// @gotags: toml:"log_level"
 	LogLevel string `protobuf:"bytes,2,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty" toml:"log_level"`
 	// @gotags: toml:"ignore_record_not_found_error"

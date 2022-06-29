@@ -118,6 +118,8 @@ func buildLoggerConfig(conf *config.LogConfig) logger.Config {
 	var err error
 	if c.SlowThreshold, err = time.ParseDuration(conf.GetSlowThreshold()); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "parser slow threshold %s", err)
+		fmt.Fprintf(os.Stderr, "use 1s as slowThreshold")
+		c.SlowThreshold = time.Second
 	}
 	c.LogLevel = ParserLevel(conf.GetLogLevel())
 	c.Colorful = conf.GetColorful()
