@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/dijkvy/geocentric/log/config"
+	"github.com/dijkvy/geocentric/config"
 )
 
 const (

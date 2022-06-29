@@ -7,7 +7,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 
-	"github.com/dijkvy/geocentric/g2gorm/config"
+	"github.com/dijkvy/geocentric/config"
 )
 
 func TestNewDBHelper(t *testing.T) {

@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package zapcfg;
+package config;
 
-option go_package = "log/config;config";
+option go_package = "./config;config";
 
 // 日志初始化配置, proto3 optional 特性
 message ZapConfig {

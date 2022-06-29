@@ -31,7 +31,7 @@ func TestInjectHandler(t *testing.T) {
 			t.Error(err)
 		}
 	}()
-
+	time.Sleep(time.Second)
 	fmt.Println(listener.Addr().String())
 	t.Log(listener.Addr().String())
 	request, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "http://"+listener.Addr().String()+"/inject", nil)
@@ -39,7 +39,7 @@ func TestInjectHandler(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 3)
 	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
 		t.Error(err)
@@ -72,6 +72,8 @@ func TestInjectTimeOutHandler(t *testing.T) {
 			t.Error(err)
 		}
 	}()
+	time.Sleep(time.Second * 3)
+
 	fmt.Println(listener.Addr().String())
 	t.Log(listener.Addr().String())
 	request, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "http://"+listener.Addr().String()+"/inject", nil)
